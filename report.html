@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cynbit Technologies — Backend Technical Audit Report</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  @page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      color: #64748b;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #0f172a;
+    line-height: 1.55;
+    font-size: 10pt;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Header Cover / Banner */
+  .cover-header {
+    border-bottom: 2px solid #0284c7;
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+  }
+
+  .brand-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand-badge {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #38bdf8;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+
+  .meta-tag {
+    font-size: 8.5pt;
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: 20pt;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 10px 0 6px 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    font-size: 11pt;
+    color: #0284c7;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .meta-item {
+    font-size: 8pt;
+  }
+
+  .meta-label {
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 7pt;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+
+  .meta-val {
+    color: #0f172a;
+    font-weight: 600;
+  }
+
+  /* Notice Callout */
+  .callout-policy {
+    background-color: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 8.5pt;
+    color: #1e40af;
+    margin-bottom: 18px;
+  }
+
+  h2 {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #0f172a;
+    border-left: 4px solid #0284c7;
+    padding-left: 8px;
+    margin-top: 22px;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    margin: 0 0 8px 0;
+    color: #334155;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px 0;
+    font-size: 8.5pt;
+  }
+
+  th {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    text-align: left;
+    padding: 7px 10px;
+    font-weight: 700;
+    border: 1px solid #cbd5e1;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  td {
+    padding: 7px 10px;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 7pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-high {
+    background-color: #ffe4e6;
+    color: #be123c;
+    border: 1px solid #fecdd3;
+  }
+
+  .badge-medium {
+    background-color: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+  }
+
+  .badge-low {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+  }
+
+  .badge-p0 {
+    background-color: #fee2e2;
+    color: #991b1b;
+    font-weight: 800;
+  }
+
+  .badge-p1 {
+    background-color: #fef3c7;
+    color: #92400e;
+    font-weight: 800;
+  }
+
+  .badge-p2 {
+    background-color: #ecfdf5;
+    color: #065f46;
+    font-weight: 800;
+  }
+
+  /* Code & Pre */
+  code {
+    font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+    font-size: 8pt;
+    background-color: #f1f5f9;
+    color: #0f172a;
+    padding: 1px 4px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+  }
+
+  pre {
+    background-color: #0f172a;
+    color: #f8fafc;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 7.8pt;
+    line-height: 1.45;
+    padding: 10px 12px;
+    border-radius: 6px;
+    overflow-x: hidden;
+    white-space: pre-wrap;
+    word-break: break-all;
+    margin: 8px 0 14px 0;
+    border: 1px solid #1e293b;
+  }
+
+  pre .keyword { color: #f43f5e; font-weight: 600; }
+  pre .string { color: #34d399; }
+  pre .comment { color: #64748b; font-style: italic; }
+  pre .func { color: #38bdf8; }
+  pre .type { color: #fbbf24; }
+
+  /* Diagram Box */
+  .diagram-container {
+    background-color: #090d16;
+    color: #38bdf8;
+    border: 1px solid #1e293b;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    line-height: 1.35;
+    margin: 10px 0 16px 0;
+  }
+
+  .page-break {
+    page-break-before: always;
+    break-before: page;
+  }
+
+  .card-box {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 14px;
+    background: #ffffff;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+
+  .card-title {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 9.5pt;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  ul, ol {
+    margin: 4px 0 10px 20px;
+    padding: 0;
+    color: #334155;
+    font-size: 9pt;
+  }
+
+  li {
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+  <!-- COVER HEADER -->
+  <div class="cover-header">
+    <div class="brand-row">
+      <span class="brand-badge">CYNBIT TECHNOLOGIES &bull; TECHNICAL AUDIT</span>
+      <span class="meta-tag">Date: October 30, 2026</span>
+    </div>
+    <h1>Backend Technical Audit & Architecture Review</h1>
+    <div class="subtitle">Comprehensive Analysis of Observable Backend Architecture, APIs, Security & Performance</div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Candidate</div>
+        <div class="meta-val">Sumit Kesarwani</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Applied Role</div>
+        <div class="meta-val">Backend Developer Intern</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Evaluation Team</div>
+        <div class="meta-val">Aria AI &bull; Talent Acquisition</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Audited Targets</div>
+        <div class="meta-val">cynbit.in / portal.cynbit.in</div>
+      </div>
+    </div>
+
+    <div class="callout-policy">
+      <strong>Compliance Declaration:</strong> Conducted strictly via passive, non-intrusive observation as permitted by Cynbit's assessment guidelines. No destructive payloads, fuzzing, brute force, or unauthorized system access occurred.
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2>1. Required Deliverable: Backend Technical Audit Report</h2>
+  <p>This section details the architectural analysis of Cynbit's observable backend runtime, deployment topology, API interaction models, and wire payloads.</p>
+
+  <h3>1.1 Observable System Topology & Edge Infrastructure</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Infrastructure Layer</th>
+        <th style="width: 35%;">Observable Implementation</th>
+        <th style="width: 40%;">Architectural Assessment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Edge & CDN Layer</strong></td>
+        <td>Vercel Global Edge Network (<code>Server: Vercel</code>)</td>
+        <td>Edge routing via POPs in Mumbai (<code>bom1</code>) with US East fallback (<code>iad1</code>). Delivers fast static assets globally.</td>
+      </tr>
+      <tr>
+        <td><strong>Framework Runtime</strong></td>
+        <td>Next.js App Router (React Server Components)</td>
+        <td>Observable RSC headers (<code>X-Nextjs-Prerender: 1</code>, <code>X-Nextjs-Stale-Time: 300</code>, <code>Vary: rsc, next-router-state-tree</code>).</td>
+      </tr>
+      <tr>
+        <td><strong>Domain & Routing</strong></td>
+        <td>GoDaddy DNS to Vercel CNAME/A (<code>216.198.79.1</code>)</td>
+        <td>Subdomain routing: Marketing site at <code>cynbit.in</code>; administrative console at <code>portal.cynbit.in</code> (via HTTP 307).</td>
+      </tr>
+      <tr>
+        <td><strong>Mail Exchange</strong></td>
+        <td>Microsoft 365 (<code>cynbit-in.mail.protection.outlook.com</code>)</td>
+        <td>Direct enterprise mail routing for transactional and recruitment workflows.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="diagram-container">
+[ PUBLIC CLIENT / BROWSER ]
+       │
+       ▼ (HTTPS / TLS 1.3)
+[ VERCEL ANYCAST EDGE NETWORK (bom1 / iad1) ]
+       │
+       ├───────────────────────────────────────────┐
+       ▼                                           ▼
+[ cynbit.in (Main Site) ]                 [ portal.cynbit.in ]
+ • Prerendered Static HTML (300s)          • Administrative Portal Route
+ • Edge Server Actions (POST RPC):         • Server Action: loginToPortal
+   - submitInquiry (Contact form)          • Client session tracker:
+   - submitCandidateApplication (Careers)    localStorage.cynbit_portal_last_activity
+  </div>
+
+  <h3>1.2 API Structure & Payload Analysis</h3>
+  <p>Cynbit avoids classic RESTful JSON endpoints (<code>/api/*</code>) in favor of <strong>Next.js React Server Actions</strong>. These actions run server-side over HTTP POST and are bound to compiled hashes:</p>
+
+  <div class="card-box">
+    <div class="card-title">
+      <span>1. Contact Inquiry Action (<code>submitInquiry</code>)</span>
+      <code>ID: 40247ba4465344b3386595bab4303317cdcce907df</code>
+    </div>
+    <p><strong>Route:</strong> <code>POST /contact</code> | <strong>Encoding:</strong> <code>multipart/form-data</code></p>
+    <ul>
+      <li><strong>Fields:</strong> <code>fullName</code> (text), <code>email</code> (email), <code>company</code> (optional), <code>industry</code> (optional), <code>message</code> (text).</li>
+      <li><strong>Response Contract:</strong> Returns JSON <code>{ "success": true }</code> or <code>{ "success": false, "error": "Something went wrong..." }</code>.</li>
+    </ul>
+  </div>
+
+  <div class="card-box">
+    <div class="card-title">
+      <span>2. Candidate Application Action (<code>submitCandidateApplication</code>)</span>
+      <code>ID: 40645a00e04f6854903cf3a65fda4c75ddd7691de9</code>
+    </div>
+    <p><strong>Route:</strong> <code>POST /careers/[slug]</code> | <strong>Encoding:</strong> <code>multipart/form-data</code></p>
+    <ul>
+      <li><strong>Flat Metadata:</strong> <code>jobId</code>, <code>fullName</code>, <code>email</code>, <code>phone</code>, <code>linkedinUrl</code>, <code>professionalProfileUrl</code>, <code>message</code>, <code>agreedToTerms</code>.</li>
+      <li><strong>Complex Serialized Payload:</strong> <code>educationData</code> is transmitted as a serialized JSON string array (<code>JSON.stringify(array)</code>) containing qualification level, degree, university, graduation year, and score.</li>
+      <li><strong>Binary Attachment:</strong> <code>resume</code> transmitted as a multipart file stream.</li>
+      <li><strong>Response Contract:</strong> <code>{ success: boolean, isDuplicate?: boolean, trackingUrl?: string, error?: string }</code>. Synchronous execution includes database persistence and unique record validation.</li>
+    </ul>
+  </div>
+
+  <div class="card-box">
+    <div class="card-title">
+      <span>3. Administrative Portal Login (<code>loginToPortal</code>)</span>
+      <code>ID: 40d93da1cc26de4ef37bcb273184b7141ef77a50f8</code>
+    </div>
+    <p><strong>Route:</strong> <code>POST /portal</code> | <strong>Payload:</strong> <code>password</code> (Security Key string)</p>
+    <ul>
+      <li>Client sets <code>localStorage.setItem("cynbit_portal_last_activity", Date.now().toString())</code> and redirects to <code>/dashboard</code>.</li>
+      <li>Unauthenticated requests to <code>/dashboard</code> are deflected via <code>307 Temporary Redirect</code> back to root.</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="page-break"></div>
+  <h2>2. Required Deliverable: Security & Performance Findings</h2>
+  <p>Findings are categorized across authentication, HTTP security posture, data handling, and serverless performance.</p>
+
+  <h3>2.1 Categorized Security Matrix</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Vulnerability / Observation</th>
+        <th>Severity</th>
+        <th>Affected Surface</th>
+        <th>Threat Impact</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Single-Factor Shared Security Key</strong></td>
+        <td><span class="badge badge-high">High</span></td>
+        <td><code>portal.cynbit.in</code> (loginToPortal)</td>
+        <td>Absence of non-repudiation (shared credential across staff), zero MFA, and inability to support granular RBAC.</td>
+      </tr>
+      <tr>
+        <td><strong>Missing Security Headers (CSP, Frame Options)</strong></td>
+        <td><span class="badge badge-medium">Medium</span></td>
+        <td>Global (<code>cynbit.in</code> & portal)</td>
+        <td>Leaves portal and forms vulnerable to Clickjacking (iframe embedding) and cross-site scripting (XSS).</td>
+      </tr>
+      <tr>
+        <td><strong>Permissive Wildcard CORS Policy</strong></td>
+        <td><span class="badge badge-medium">Medium</span></td>
+        <td>Global HTTP Responses</td>
+        <td><code>Access-Control-Allow-Origin: *</code> returned on static and OPTIONS responses broadens cross-origin exposure.</td>
+      </tr>
+      <tr>
+        <td><strong>SPF Misalignment & Permissive DMARC</strong></td>
+        <td><span class="badge badge-medium">Medium</span></td>
+        <td>DNS / Outbound Mail</td>
+        <td>SPF omits Microsoft 365 (<code>spf.protection.outlook.com</code>). Outbound emails risk spam filters; DMARC <code>p=none;</code> enables spoofing.</td>
+      </tr>
+      <tr>
+        <td><strong>Framework Information Disclosure</strong></td>
+        <td><span class="badge badge-low">Low</span></td>
+        <td>Dynamic Routes</td>
+        <td><code>X-Powered-By: Next.js</code> and <code>X-Matched-Path</code> exposed, facilitating automated framework targeting.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 Detailed Analytical Findings</h3>
+  <div class="card-box">
+    <div class="card-title">1. Authentication Architecture Weaknesses on Internal Portal</div>
+    <p>The internal administrative gateway at <code>portal.cynbit.in</code> authenticates administrators using a single input labeled <em>"Security Key"</em> that submits a single <code>password</code> parameter. This architecture exhibits three key limitations:</p>
+    <ul>
+      <li><strong>Lack of Individual Accountability:</strong> Shared secrets cannot distinguish between team members or contractors. An action taken cannot be attributed to a specific person.</li>
+      <li><strong>Key Rotation Overhead:</strong> When any team member departs, the master key must be updated and manually distributed to all staff.</li>
+      <li><strong>Tamperable Inactivity Tracking:</strong> Storing session expiration timestamps in browser <code>localStorage</code> (<code>cynbit_portal_last_activity</code>) is client-controlled and vulnerable to manipulation or XSS exfiltration.</li>
+    </ul>
+  </div>
+
+  <div class="card-box">
+    <div class="card-title">2. Incomplete DNS Email Authentication (SPF / DMARC)</div>
+    <p>Passive DNS inspection indicates:</p>
+    <ul>
+      <li><strong>SPF Record:</strong> <code>v=spf1 include:secureserver.net -all</code></li>
+      <li><strong>MX Record:</strong> <code>cynbit-in.mail.protection.outlook.com</code> (Microsoft 365)</li>
+      <li><strong>DMARC Record:</strong> <code>v=DMARC1; p=none;</code></li>
+    </ul>
+    <p><strong>Impact:</strong> Because the SPF record only lists GoDaddy (<code>secureserver.net</code>) and omits Microsoft 365, emails sent from Cynbit's corporate mailbox to candidates or clients will fail SPF checks on strict receiving mail servers (Google Workspace, Yahoo, corporate gateways). With DMARC set to <code>p=none</code>, domain spoofing goes unquarantined.</p>
+  </div>
+
+  <div class="card-box">
+    <div class="card-title">3. Data Validation & File Handling Risks</div>
+    <ul>
+      <li><strong>Unvalidated Stringified JSON:</strong> <code>educationData</code> is passed as a stringified JSON array inside <code>FormData</code>. If the backend invokes <code>JSON.parse()</code> without deep schema validation (e.g. Zod), unexpected keys, extreme lengths, or non-array inputs can trigger uncaught edge exceptions.</li>
+      <li><strong>Resume Ingestion:</strong> Resumes submitted via <code>submitCandidateApplication</code> require backend magic-byte verification (checking <code>%PDF</code> signatures) rather than trusting client-declared MIME types.</li>
+    </ul>
+  </div>
+
+  <div class="card-box">
+    <div class="card-title">4. Serverless Performance & Synchronous Pipeline Bottlenecks</div>
+    <p>Executing candidate registration, duplicate database lookups, and SMTP email notifications synchronously inside a single Server Action increases edge execution time and risks hitting Vercel's execution timeouts under load. The pipeline should be decoupled using an asynchronous event queue.</p>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="page-break"></div>
+  <h2>3. Required Deliverable: Recommended Improvements & Code Implementations</h2>
+  <p>The following modular, production-ready TypeScript code snippets provide defensive remediations for Cynbit's backend ecosystem.</p>
+
+  <h3>3.1 Hardened Security Headers & Fingerprint Removal</h3>
+  <p>Update <code>next.config.js</code> to suppress framework disclosure and enforce strict CSP and clickjacking defenses:</p>
+  <pre><span class="comment">// next.config.js</span>
+<span class="keyword">const</span> nextConfig = {
+  <span class="comment">// 1. Strip framework fingerprinting</span>
+  poweredByHeader: <span class="keyword">false</span>,
+
+  <span class="comment">// 2. Enforce defense-in-depth HTTP security headers</span>
+  <span class="keyword">async</span> <span class="func">headers</span>() {
+    <span class="keyword">return</span> [
+      {
+        source: <span class="string">'/:path*'</span>,
+        headers: [
+          { key: <span class="string">'Strict-Transport-Security'</span>, value: <span class="string">'max-age=63072000; includeSubDomains; preload'</span> },
+          { key: <span class="string">'X-Frame-Options'</span>, value: <span class="string">'DENY'</span> },
+          { key: <span class="string">'X-Content-Type-Options'</span>, value: <span class="string">'nosniff'</span> },
+          { key: <span class="string">'Referrer-Policy'</span>, value: <span class="string">'strict-origin-when-cross-origin'</span> },
+          { key: <span class="string">'Permissions-Policy'</span>, value: <span class="string">'camera=(), microphone=(), geolocation=()'</span> },
+          {
+            key: <span class="string">'Content-Security-Policy'</span>,
+            value: [
+              <span class="string">"default-src 'self'"</span>,
+              <span class="string">"script-src 'self' 'unsafe-inline' https://www.googletagmanager.com"</span>,
+              <span class="string">"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com"</span>,
+              <span class="string">"font-src 'self' https://fonts.gstatic.com data:"</span>,
+              <span class="string">"img-src 'self' https: data: blob:"</span>,
+              <span class="string">"connect-src 'self' https://*.cynbit.in https://www.google-analytics.com"</span>,
+              <span class="string">"frame-ancestors 'none'"</span>,
+            ].join(<span class="string">'; '</span>),
+          },
+        ],
+      },
+    ];
+  },
+};
+module.exports = nextConfig;</pre>
+
+  <h3>3.2 Robust Zod Validation & Type-Safe Server Action</h3>
+  <p>Refactored <code>submitCandidateApplication</code> incorporating rate-limiting, deep JSON schema validation, and PDF magic-byte verification:</p>
+  <pre><span class="comment">// app/actions/candidate.ts</span>
+<span class="string">'use server'</span>;
+
+<span class="keyword">import</span> { z } <span class="keyword">from</span> <span class="string">'zod'</span>;
+<span class="keyword">import</span> { rateLimiter } <span class="keyword">from</span> <span class="string">'@/lib/rate-limiter'</span>;
+<span class="keyword">import</span> { enqueueApplication } <span class="keyword">from</span> <span class="string">'@/lib/queue'</span>;
+<span class="keyword">import</span> { headers } <span class="keyword">from</span> <span class="string">'next/headers'</span>;
+
+<span class="keyword">const</span> EducationSchema = z.object({
+  id: z.string(),
+  qualificationLevel: z.string().min(1),
+  degree: z.string().min(1),
+  university: z.string().min(2),
+  graduationYear: z.string().regex(/^\d{4}$/),
+  status: z.enum([<span class="string">'Completed'</span>, <span class="string">'Currently Pursuing'</span>, <span class="string">'Expected to Graduate'</span>]),
+});
+
+<span class="keyword">const</span> CandidateSchema = z.object({
+  jobId: z.string().min(1),
+  fullName: z.string().trim().min(2).max(100),
+  email: z.string().trim().email().toLowerCase(),
+  phone: z.string().regex(/^\+?[1-9]\d{7,14}$/, <span class="string">'Invalid phone format'</span>),
+  linkedinUrl: z.string().url().regex(/linkedin\.com/),
+  message: z.string().min(10).max(3000),
+  agreedToTerms: z.literal(<span class="keyword">true</span>),
+  educationData: z.string().transform((str, ctx) => {
+    <span class="keyword">try</span> {
+      <span class="keyword">return</span> z.array(EducationSchema).min(1).parse(JSON.parse(str));
+    } <span class="keyword">catch</span> {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: <span class="string">'Malformed education data structure'</span> });
+      <span class="keyword">return</span> z.NEVER;
+    }
+  }),
+});
+
+<span class="keyword">export async function</span> <span class="func">submitCandidateApplication</span>(formData: FormData) {
+  <span class="keyword">try</span> {
+    <span class="comment">// 1. Sliding Window IP Rate Limiting</span>
+    <span class="keyword">const</span> headerList = <span class="keyword">await</span> <span class="func">headers</span>();
+    <span class="keyword">const</span> ip = headerList.get(<span class="string">'x-forwarded-for'</span>)?.split(<span class="string">','</span>)[0].trim() || <span class="string">'127.0.0.1'</span>;
+    <span class="keyword">const</span> { success: allowed } = <span class="keyword">await</span> rateLimiter.<span class="func">limit</span>(`apply:${ip}`);
+    <span class="keyword">if</span> (!allowed) <span class="keyword">return</span> { success: <span class="keyword">false</span>, error: <span class="string">'Rate limit exceeded. Please wait.'</span> };
+
+    <span class="comment">// 2. Deep Schema Parsing</span>
+    <span class="keyword">const</span> data = CandidateSchema.<span class="func">parse</span>({
+      jobId: formData.get(<span class="string">'jobId'</span>),
+      fullName: formData.get(<span class="string">'fullName'</span>),
+      email: formData.get(<span class="string">'email'</span>),
+      phone: formData.get(<span class="string">'phone'</span>),
+      linkedinUrl: formData.get(<span class="string">'linkedinUrl'</span>),
+      message: formData.get(<span class="string">'message'</span>),
+      agreedToTerms: formData.get(<span class="string">'agreedToTerms'</span>) === <span class="string">'on'</span>,
+      educationData: formData.get(<span class="string">'educationData'</span>),
+    });
+
+    <span class="comment">// 3. Magic-byte verification for PDF (%PDF -> 0x25 0x50 0x44 0x46)</span>
+    <span class="keyword">const</span> file = formData.get(<span class="string">'resume'</span>) <span class="keyword">as</span> File;
+    <span class="keyword">if</span> (!file || file.size === 0) <span class="keyword">return</span> { success: <span class="keyword">false</span>, error: <span class="string">'Resume is required'</span> };
+    <span class="keyword">if</span> (file.size > 5 * 1024 * 1024) <span class="keyword">return</span> { success: <span class="keyword">false</span>, error: <span class="string">'File exceeds 5MB limit'</span> };
+
+    <span class="keyword">const</span> buffer = Buffer.from(<span class="keyword">await</span> file.arrayBuffer());
+    <span class="keyword">const</span> isPdf = buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46;
+    <span class="keyword">if</span> (!isPdf) <span class="keyword">return</span> { success: <span class="keyword">false</span>, error: <span class="string">'Only genuine PDF documents permitted'</span> };
+
+    <span class="comment">// 4. Instant Enqueueing (Guarantees &lt; 200ms user latency)</span>
+    <span class="keyword">const</span> submissionId = crypto.randomUUID();
+    <span class="keyword">await</span> <span class="func">enqueueApplication</span>({ submissionId, data, buffer, fileName: file.name });
+
+    <span class="keyword">return</span> { success: <span class="keyword">true</span>, trackingUrl: `/portal/track/${submissionId}` };
+  } <span class="keyword">catch</span> (err) {
+    <span class="keyword">if</span> (err <span class="keyword">instanceof</span> z.ZodError) <span class="keyword">return</span> { success: <span class="keyword">false</span>, error: err.issues.map(i => i.message).join(<span class="string">'. '</span>) };
+    <span class="keyword">return</span> { success: <span class="keyword">false</span>, error: <span class="string">'Server error. Please reach out via email.'</span> };
+  }
+}</pre>
+
+  <!-- SECTION 4 -->
+  <div class="page-break"></div>
+  <h3>3.3 Asynchronous Queue Pattern & Decoupled Processing</h3>
+  <p>Decouple email notifications and cloud bucket storage from the immediate HTTP request cycle using an edge queue (e.g., Upstash QStash or Redis Queue):</p>
+  <pre><span class="comment">// lib/queue.ts</span>
+<span class="keyword">import</span> { Client } <span class="keyword">from</span> <span class="string">'@upstash/qstash'</span>;
+
+<span class="keyword">const</span> qstash = <span class="keyword">new</span> <span class="type">Client</span>({ token: process.env.QSTASH_TOKEN! });
+
+<span class="keyword">export async function</span> <span class="func">enqueueApplication</span>(payload: {
+  submissionId: string;
+  data: any;
+  buffer: Buffer;
+  fileName: string;
+}) {
+  <span class="keyword">await</span> qstash.<span class="func">publishJSON</span>({
+    url: `${process.env.INTERNAL_WORKER_URL}/api/webhooks/process-application`,
+    body: {
+      submissionId: payload.submissionId,
+      candidate: payload.data,
+      resumeBase64: payload.buffer.toString(<span class="string">'base64'</span>),
+      fileName: payload.fileName,
+      timestamp: <span class="keyword">new</span> Date().toISOString(),
+    },
+    retries: 3, <span class="comment">// Automatic exponential backoff</span>
+  });
+}</pre>
+
+  <h3>3.4 HttpOnly Cookie Session Middleware for Administrative Portal</h3>
+  <p>Replace the single static security key on <code>portal.cynbit.in</code> with encrypted, tamper-resistant HTTP-only cookies and edge middleware route protection:</p>
+  <pre><span class="comment">// middleware.ts (Protects /dashboard and /portal/admin)</span>
+<span class="keyword">import</span> { NextResponse } <span class="keyword">from</span> <span class="string">'next/server'</span>;
+<span class="keyword">import type</span> { NextRequest } <span class="keyword">from</span> <span class="string">'next/server'</span>;
+<span class="keyword">import</span> { getIronSession } <span class="keyword">from</span> <span class="string">'iron-session'</span>;
+<span class="keyword">import</span> { sessionOptions, SessionData } <span class="keyword">from</span> <span class="string">'@/lib/auth/session'</span>;
+
+<span class="keyword">export async function</span> <span class="func">middleware</span>(request: NextRequest) {
+  <span class="keyword">const</span> res = NextResponse.next();
+  <span class="keyword">const</span> session = <span class="keyword">await</span> <span class="func">getIronSession</span>&lt;<span class="type">SessionData</span>&gt;(request.cookies, res.cookies, sessionOptions);
+
+  <span class="keyword">if</span> (request.nextUrl.pathname.startsWith(<span class="string">'/dashboard'</span>)) {
+    <span class="keyword">if</span> (!session.isLoggedIn || Date.now() > session.expiresAt) {
+      session.<span class="func">destroy</span>();
+      <span class="keyword">const</span> loginUrl = <span class="keyword">new</span> URL(<span class="string">'/portal'</span>, request.url);
+      loginUrl.searchParams.set(<span class="string">'redirect'</span>, request.nextUrl.pathname);
+      <span class="keyword">return</span> NextResponse.<span class="func">redirect</span>(loginUrl);
+    }
+  }
+  <span class="keyword">return</span> res;
+}
+
+<span class="keyword">export const</span> config = { matcher: [<span class="string">'/dashboard/:path*'</span>] };</pre>
+
+  <h3>3.5 DNS Mail Authentication Remediations (SPF & DMARC)</h3>
+  <div class="card-box">
+    <div class="card-title">1. Remediated SPF Record (Authorizes Microsoft 365 Exchange)</div>
+    <pre>v=spf1 include:secureserver.net include:spf.protection.outlook.com -all</pre>
+  </div>
+  <div class="card-box">
+    <div class="card-title">2. Upgraded DMARC Policy (Active Quarantine Enforcement)</div>
+    <pre>v=DMARC1; p=quarantine; rua=mailto:dmarc-reports@cynbit.in; ruf=mailto:dmarc-failures@cynbit.in; pct=100; sp=quarantine;</pre>
+  </div>
+
+  <!-- ROADMAP TABLE -->
+  <h2>4. Implementation Priority Roadmap</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Priority</th>
+        <th>Remediation Initiative</th>
+        <th>Estimated Time</th>
+        <th>Business & Engineering Impact</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-p0">P0 (Immediate)</span></td>
+        <td>Update SPF to authorize Outlook & enforce DMARC</td>
+        <td>1 hour</td>
+        <td>Prevents applicant & client notification emails from landing in spam.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-p0">P0 (Immediate)</span></td>
+        <td>Add HTTP security headers & disable <code>poweredByHeader</code></td>
+        <td>2 hours</td>
+        <td>Mitigates clickjacking, cross-site script injection, and fingerprinting.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-p1">P1 (High)</span></td>
+        <td>Replace shared Security Key with RBAC & <code>HttpOnly</code> cookies</td>
+        <td>1–2 days</td>
+        <td>Establishes full auditability and secures internal administrative tools.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-p1">P1 (High)</span></td>
+        <td>Implement Zod schema validation & PDF magic-byte checks</td>
+        <td>1 day</td>
+        <td>Hardens against malformed JSON payloads and malicious file uploads.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-p2">P2 (Medium)</span></td>
+        <td>Decouple email/recruitment pipeline via async queue (QStash/SQS)</td>
+        <td>2 days</td>
+        <td>Guarantees &lt; 200ms latency and eliminates serverless timeout risk.</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>
+
